@@ -30,3 +30,11 @@ This Project aims for the measuring the distance from the point to the camera an
     c = max(cnts, key = cv2.contourArea)
     return cv2.minAreaRect(c)
     ```
+
+* Then we would apply the formula for distance to camera i.e `D = (W x F) / P` where W => Width of the object, P => To measure the apparent width in pixels P, F => Focal length. Here we take `knownWidth, focalLength, perWidth` as W, F, P respectivily.
+    ```
+    def distance_to_camera(knownWidth, focalLength, perWidth):
+    	return (knownWidth * focalLength) / perWidth
+    ```
+
+* Then for each and every image in the list, we would first sort the list and would iterate the sorted list. We load off the image using `cv2.imread(imagePath)`, and find the marker (object) of the image `find_marker(image)` and distance in inches using function `distance_to_camera(KNOWN_WIDTH, focalLength, marker[1][0])`. Now to create the box around that rectangle, if we use OpenCV 2.4, then use `cv2.cv.BoxPoints`, else if use OpenCV 3, then use `cv2.boxPoints`, so overall we write it as - `cv2.cv.BoxPoints(marker) if imutils.is_cv2() else cv2.boxPoints(marker)`. Now to draw the counters - `cv2.drawContours` function is used. It can also be used to draw any shape provided you have its boundary points. Its first argument is source image, second argument is the contours which should be passed as a Python list, third argument is index of contours (useful when drawing individual contour. To draw all contours, pass -1) and remaining arguments are color, thickness etc.
